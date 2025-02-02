@@ -90,7 +90,7 @@ const App = () => {
   const [zombieFighters, setZombieFighters ] = useState(initialState);
   
   const handleAddFighter = (fighter) => {
-    if (money < fighter.price) {
+    if (money <= fighter.price) {
       console.log('Not Enough Money');
       return;
     }
@@ -108,17 +108,20 @@ const App = () => {
     setMoney(newMoney);
   };
 
-  const handleRemoveFighter = (fighter) => {
-    const newTeam = [...team, fighter];
-    setTeam(newTeam);
-    // setTeam([...team, fighter]);
-
-    const newZombieFighters = zombieFighters.filter(zombieFighter => (
-      zombieFighter.id !== fighter.id
+  const handleRemoveFighter = (fighterId) => {
+    const removedFighter = team.find(member => (
+      member.id === fighterId
     ));
+
+    const newTeam = team.filter(member => (
+      member.id !== fighterId
+    ));
+    setTeam(newTeam);
+
+    const newZombieFighters = [...zombieFighters, removedFighter];
     setZombieFighters(newZombieFighters);
 
-    const newMoney = money + fighter.price;
+    const newMoney = money + removedFighter.price;
     setMoney(newMoney);
   };
 
@@ -152,7 +155,7 @@ const App = () => {
             <p>Price: {member.price}</p> 
             <p>Strength: {member.strength}</p> 
             <p>Agility: {member.agility}</p>
-            <button onClick={() => handleRemoveFighter(fighter)}>Remove</button>
+            <button onClick={() => handleRemoveFighter(member.id)}>Remove</button>
           </li>
         ))}
       </ul>
@@ -161,6 +164,12 @@ const App = () => {
   };
 
   const totalStrength = () => {
+    // if (team.length === 0) {
+    //   return 0;
+    // } else {
+    //   return team.reduce((total, fighter) => {
+    //     return total + fighter.strength }, 0);
+    // }
     let total = 0;
     if (team.length === 0) {
       return total;
@@ -173,6 +182,12 @@ const App = () => {
   };
 
   const totalAgility = () => {
+    // if (team.length === 0) {
+    //   return 0;
+    // } else {
+    //   return team.reduce((total, fighter) => {
+    //     return total + fighter.agility }, 0);
+    // }
     let total = 0;
     if (team.length === 0) {
       return total;
@@ -182,18 +197,18 @@ const App = () => {
       });
       return total;
     }
-  }
+  };
 
   return (
     <>
-    <h1>Zombie Fighters</h1>
-    <h3>Money: {money}</h3>
-    <h3>Team Strength: {totalStrength()}</h3>
-    <h3>Team Agility: {totalAgility()}</h3>
-    <h3>Team: </h3>
-    {teamMembers()}
-    <h1>Fighters: </h1>
-    {zombieFighterMembers()}
+      <h1>Zombie Fighters</h1>
+      <h3>Money: {money}</h3>
+      <h3>Team Strength: {totalStrength()}</h3>
+      <h3>Team Agility: {totalAgility()}</h3>
+      <h3>Team: </h3>
+      {teamMembers()}
+      <h1>Fighters: </h1>
+      {zombieFighterMembers()}
     </>
   );
 };
